@@ -8,18 +8,17 @@ int num_client=0; // total number of clients
 int num_sent=0; // number of clients that the message has been sent
 int new_message=0; // set to 1 when there is a new message, reset when all threads have sent
 int sent_clientfd; //the client that sent the message will not receive the message it sent 
-
-void get_time(char* time_str){
-	struct timeval now;
-	gettimeofday(&now,NULL);
-	strcpy(time_str,ctime(&now.tv_sec));
-}
+int exit_clientfd=-1;
 
 void* fsend(void* sockfd) 
 {
 	char buff[MAX]; 
 	int sent=0; // set to one when this thread has already sent the new message
 	for (;;) { 
+		if(exit_clientfd == *(int*)sockfd){
+			exit_clientfd=-1;
+			break;
+		}	
 		if(new_message==0 && sent==1)	sent=0;	// reset sent
 		else if(new_message==1 && sent==0 && sent_clientfd!=*(int*)sockfd){
 
@@ -50,12 +49,13 @@ void* frecv(void* sockfd)
 	char* time_str;
 	time_str=(char*)malloc(50);
 	bzero(name,MAX);
-    int	first=0;
+    	int first=0;
 
 	for(;;){		
 		bzero(buff, MAX);
 		recv(*(int*)sockfd, buff, sizeof(buff), 0); 
 		if(buff[0]=='\0'){
+			exit_clientfd= *(int*)sockfd; // record exited clientfd
 			get_time(time_str);
 			printf("\n%s-------%s exit-------\n",time_str,name);			
 			break;
@@ -65,7 +65,10 @@ void* frecv(void* sockfd)
 			get_time(time_str);
 			printf("\n%s-------Server accept the client %s-------\n",time_str,name); 
 			first=1;
-			continue;
+			strcpy(buff, "-------");
+			strcat(buff, name);
+			strcat(buff, " enters the chatroom-------\n");			
+			//continue;
 		}
 		else{
 			get_time(time_str);
@@ -150,6 +153,8 @@ int main()
 			
 		}
 	}
+
+	bzero(ShareM, MAX);
 
 	sem_destroy(&mutex);
 	pthread_join(thr_send, NULL);

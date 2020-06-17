@@ -11,3 +11,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #define MAX 80 
+
+
+void get_time(char* time_str){
+	struct timeval now;
+	gettimeofday(&now,NULL);
+	strcpy(time_str,ctime(&now.tv_sec));
+}

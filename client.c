@@ -6,43 +6,45 @@ void* fsend(void* sockfd)
 {
 	char buff[MAX]; 
 	int n;
-    int first=0;	
+    	int first=0;	
 	for (;;) { 
 		strcpy(buff, client_name); // put client name into buff
 		if(!first){
 			send(*(int*)sockfd, buff, sizeof(buff), 0); 
 			first=1;
 		}
-        strcat(buff, ": ");
-		n= strlen(buff); 
+		else{
+        		strcat(buff, ": ");
+			n= strlen(buff); 
 
-		while ((buff[n++] = getchar()) != '\n') 
+			while ((buff[n++] = getchar()) != '\n') 
 			; 
-		if(!strncmp(buff+strlen(client_name)+2,"exit",4)){
+			if(!strncmp(buff+strlen(client_name)+2,"exit",4)){
+				bzero(buff, sizeof(buff)); 
+				exit(0);
+			}
+
+			send(*(int*)sockfd, buff, sizeof(buff), 0); 
 			bzero(buff, sizeof(buff)); 
-			exit(0);
 		}
-
-		send(*(int*)sockfd, buff, sizeof(buff), 0); 
-		bzero(buff, sizeof(buff)); 
-
 	}
 }
 
 void* frecv(void* sockfd) 
 {
 	char buff[MAX];
-	char test[MAX];
-	bzero(test, sizeof(test)); 
-	test[0]='e';test[1]='x';test[2]='i';test[3]='t';test[4]='\n';
+	char* time_str;
+	time_str=(char*)malloc(50);
 	for(;;){		
 		recv(*(int*)sockfd, buff, sizeof(buff), 0);
 
 		if(buff[0]=='\0'){
-			printf("-------Server shut down-------\n");			
+			get_time(time_str);			
+			printf("\n%s-------Server shut down-------\n", time_str);			
 			break;
 		}
-		printf("%s", buff); 
+		get_time(time_str);
+		printf("\n%s%s",time_str, buff); 
 		bzero(buff, sizeof(buff)); 
 	}
 }
