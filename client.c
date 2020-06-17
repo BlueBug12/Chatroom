@@ -5,15 +5,24 @@ char client_name[MAX];
 void* fsend(void* sockfd) 
 {
 	char buff[MAX]; 
-	int n; 
+	int n;
+    int first=0;	
 	for (;;) { 
-
 		strcpy(buff, client_name); // put client name into buff
-            	strcat(buff, ": ");
+		if(!first){
+			send(*(int*)sockfd, buff, sizeof(buff), 0); 
+			first=1;
+		}
+        strcat(buff, ": ");
 		n= strlen(buff); 
 
 		while ((buff[n++] = getchar()) != '\n') 
 			; 
+		if(!strncmp(buff+strlen(client_name)+2,"exit",4)){
+			bzero(buff, sizeof(buff)); 
+			exit(0);
+		}
+
 		send(*(int*)sockfd, buff, sizeof(buff), 0); 
 
 	}
@@ -21,15 +30,18 @@ void* fsend(void* sockfd)
 
 void* frecv(void* sockfd) 
 {
-	char buff[MAX]; 
+	char buff[MAX];
+	char test[MAX];
+	bzero(test, sizeof(test)); 
+	test[0]='e';test[1]='x';test[2]='i';test[3]='t';test[4]='\n';
 	for(;;){		
-		recv(*(int*)sockfd, buff, sizeof(buff), 0); 
+		recv(*(int*)sockfd, buff, sizeof(buff), 0);
+
 		if(buff[0]=='\0'){
 			printf("-------Server shut down-------\n");			
 			break;
 		}
 		printf("%s", buff); 
-
 		bzero(buff, sizeof(buff)); 
 	}
 }

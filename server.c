@@ -39,15 +39,27 @@ void* fsend(void* sockfd)
 
 void* frecv(void* sockfd) 
 {
-	char buff[MAX]; 
+	char buff[MAX];
+	char name[MAX];
+	bzero(name,MAX);
+    int	first=0;
+
 	for(;;){		
 		bzero(buff, MAX);
 		recv(*(int*)sockfd, buff, sizeof(buff), 0); 
 		if(buff[0]=='\0'){
-			printf("-------Client exit-------\n");			
+			printf("-------%s exit-------\n",name);			
 			break;
 		}
-		printf("%s", buff);
+		if(!first){//fisrt message is the name of client
+			strcpy(name,buff);
+			printf("-------Server accept the client %s-------\n",name); 
+			first=1;
+			continue;
+		}
+		else{
+			printf("%s", buff);
+		}
 
 		sem_wait(&mutex); // semaphore wait
 		while(new_message) // wait until all the threads sent the message (new_message=0)
@@ -57,6 +69,9 @@ void* frecv(void* sockfd)
 		new_message=1;  
 		sem_post(&mutex); // semaphore signal
 	}
+
+	--num_client;	
+//	printf("--num_client\n");
 }
 
 // Driver function 
@@ -117,7 +132,6 @@ int main()
 			}
 			else{
 				++num_client;
-				printf("-------Server acccept the client-------\n"); 
 				
 				pthread_create(&thr_send, NULL, fsend, (void*) clientfd);
 				pthread_create(&thr_recv, NULL, frecv, (void*) clientfd);
