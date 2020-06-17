@@ -5,11 +5,11 @@ For sever:
 	./server
 ```
 
-For client(x should be different number for different client, range from 1-5):
+For client(x should be different number for different client):
 ```
 	./client 127.0.0.x user_name
 ```
-* At most five clients
+* At most ten clients
 * Clients can enter "exit" to exit the chatroom
 ### B. Briefly describe the workflow and architecture of the system.
 架構圖:
@@ -168,3 +168,7 @@ void* child()
 	sem_post(&semaphore)
 }
 ```
+### E. To do
+* 記事本功能
+* 顏文字圖功能
+* 已讀功能
