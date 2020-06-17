@@ -3,7 +3,7 @@ A chatroom system consists of TCP-server and TCP-client.
 
 ### A. Briefly describe the workflow and architecture of the system.
 架構圖:
-![arc](./img/architecture.jpg)
+![arc](./img/arch.jpg)
 #### 函式使用架構:
 Server端:
 ```c
