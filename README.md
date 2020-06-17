@@ -2,15 +2,19 @@
 ### A. Execution
 For sever:
 ```
-	./server
+./server
 ```
 
 For client(x should be different number for different client):
 ```
-	./client 127.0.0.x user_name
+./client 127.0.0.x user_name
 ```
 * At most ten clients
 * Clients can enter "exit" to exit the chatroom
+
+Execution result:
+![result](./img/result.png)
+
 ### B. Briefly describe the workflow and architecture of the system.
 架構圖:
 ![arc](./img/arch.jpg)
