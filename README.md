@@ -11,8 +11,7 @@ For client(x should be different number for different client, range from 1-5):
 ```
 * At most five clients
 * Clients can enter "exit" to exit the chatroom
-
-### A. Briefly describe the workflow and architecture of the system.
+### B. Briefly describe the workflow and architecture of the system.
 架構圖:
 ![arc](./img/arch.jpg)
 #### 函式使用架構:
@@ -45,7 +44,7 @@ while(true)
 ```
 #### 流程:
 ![flow](./img/flow.jpg)
-### B. Explain the solution of synchronization problems in this project.
+### C. Explain the solution of synchronization problems in this project.
 在這個系統中會出現同步存取導致錯誤的部分為server端的frecv函式，當有超過1個client傳送訊息給server，會因為不同執行緒同時使用shared memory導致server可能只能存取最後接收到的訊息，故這裡我們必須使用semaphore來保證只有一個thread能存取，並將其strcpy出來後才能讓下一個thread使用shared memory。實作部分如下:
 ```c
 while(new_message) // wait until all the threads sent the message (new_message=0)
@@ -56,7 +55,7 @@ new_message=1;
 sem_post(&mutex); // semaphore signal
 ```
 而其中`while(new_message)`為busy-waiting，目的是要等新訊息傳出後，才能讀取下一則新訊息，否則shared memory裡面的訊息會被新讀取的訊息覆蓋，導致有些client會少接受到某些訊息。
-### C. Discussion
+### D. Discussion
 
 1. 有關socket函式之學習:
 ```c
