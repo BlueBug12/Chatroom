@@ -24,6 +24,7 @@ void* fsend(void* sockfd)
 		}
 
 		send(*(int*)sockfd, buff, sizeof(buff), 0); 
+		bzero(buff, sizeof(buff)); 
 
 	}
 }
@@ -53,9 +54,9 @@ int main(int argc, char *argv[])
 	struct hostent *host;
 
 	bzero(client_name, sizeof(client_name));
-	strcpy(client_name, argv[3]);
+	strcpy(client_name, argv[2]);
 	
-	if (argc < 4)  
+	if (argc !=3)  
    	{  
         	printf("-------wrong usage-------");  
         	exit(1);  
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
 
 	// assign IP, PORT 
 	clientaddr.sin_family = AF_INET; 
-	clientaddr.sin_port = htons((uint16_t)atoi(argv[2])); 
+	clientaddr.sin_port = htons((uint16_t)8080); 
 	inet_pton(AF_INET, argv[1], &clientaddr.sin_addr);
 
 	// connect the client socket to server socket 

@@ -9,6 +9,12 @@ int num_sent=0; // number of clients that the message has been sent
 int new_message=0; // set to 1 when there is a new message, reset when all threads have sent
 int sent_clientfd; //the client that sent the message will not receive the message it sent 
 
+void get_time(char* time_str){
+	struct timeval now;
+	gettimeofday(&now,NULL);
+	strcpy(time_str,ctime(&now.tv_sec));
+}
+
 void* fsend(void* sockfd) 
 {
 	char buff[MAX]; 
@@ -41,6 +47,8 @@ void* frecv(void* sockfd)
 {
 	char buff[MAX];
 	char name[MAX];
+	char* time_str;
+	time_str=(char*)malloc(50);
 	bzero(name,MAX);
     int	first=0;
 
@@ -48,17 +56,20 @@ void* frecv(void* sockfd)
 		bzero(buff, MAX);
 		recv(*(int*)sockfd, buff, sizeof(buff), 0); 
 		if(buff[0]=='\0'){
-			printf("-------%s exit-------\n",name);			
+			get_time(time_str);
+			printf("\n%s-------%s exit-------\n",time_str,name);			
 			break;
 		}
 		if(!first){//fisrt message is the name of client
-			strcpy(name,buff);
-			printf("-------Server accept the client %s-------\n",name); 
+			strcpy(name,buff);	
+			get_time(time_str);
+			printf("\n%s-------Server accept the client %s-------\n",time_str,name); 
 			first=1;
 			continue;
 		}
 		else{
-			printf("%s", buff);
+			get_time(time_str);
+			printf("\n%s----%s",time_str, buff);
 		}
 
 		sem_wait(&mutex); // semaphore wait

@@ -1,5 +1,16 @@
 # Chatroom
-A chatroom system consists of TCP-server and TCP-client.
+### A. Execution
+For sever:
+```
+	./server
+```
+
+For client(x should be different number for different client, range from 1-5):
+```
+	./client 127.0.0.x user_name
+```
+* At most five clients
+* Clients can enter "exit" to exit the chatroom
 
 ### A. Briefly describe the workflow and architecture of the system.
 架構圖:
